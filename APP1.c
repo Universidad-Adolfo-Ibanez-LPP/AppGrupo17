@@ -210,6 +210,7 @@ void agregar_libro(libro dato[], int cantidad){
     strncat(new_sede, &str, 2);
     strcpy(dato[nro].sede, new_sede);
 }
+
 //Permite eliminar un libro de la biblioteca
 void eliminar_libro(libro dato[], int cantidad){
     char titulo[60];
@@ -317,6 +318,7 @@ void editar(libro dato[], int cantidad, char* filename, FILE *the_file){
     reewrite(the_file, dato, cantidad);
     fclose(the_file);
 }
+
 //Se guarda el cambio en la biblioteca cuando el usuario decide cambiar un libro de sede.
 void cambiar(libro dato[], int cantidad, char* filename, FILE *the_file){
     FILE *inventario = closingFile(filename);
@@ -557,3 +559,4 @@ int main(int argc, char *argv[]) {
     }
     return 0;
 }
+
