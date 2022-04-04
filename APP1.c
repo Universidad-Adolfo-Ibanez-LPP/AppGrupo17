@@ -317,3 +317,113 @@ void editar(libro dato[], int cantidad, char* filename, FILE *the_file){
     reewrite(the_file, dato, cantidad);
     fclose(the_file);
 }
+//Se guarda el cambio en la biblioteca cuando el usuario decide cambiar un libro de sede.
+void cambiar(libro dato[], int cantidad, char* filename, FILE *the_file){
+    FILE *inventario = closingFile(filename);
+    int accion;
+    printf("\nSelecciona si desea cambiar un Libro de Sede(1) / Seccion(2) / Piso(3): ");
+    scanf("%d", &accion);
+    change(dato, accion, cantidad);
+    reewrite(the_file, dato, cantidad);
+    fclose(the_file);
+}
+
+//Permite modificar las secciones, agregando o quitando.
+void seccion(libro dato[], int cantidad, char* filename, FILE *the_file){
+    FILE *inventario = closingFile(filename);
+    int eleccion;
+    int eleccion2;
+    printf("\nSelecciona si Agregar (1) o Quitar (2) Secciones: ");
+    scanf("%d", &eleccion);
+    if(eleccion==1){
+        printf("\nDesea anadir una Seccion anadiendo un Libro (1) o cambiando la Seccion de un Libro (2): ");
+        scanf("%d", &eleccion2);
+        if(eleccion2==1){
+            agregar_libro(dato, cantidad);
+        }
+        if(eleccion2==2){
+            change(dato, 2, cantidad);
+        }
+    }
+    else if(eleccion==2){
+        printf("\nDesea quitar una Sede quitando un Libro (1) o cambiar la Seccion de un Libro (2): ");
+        scanf("%d", &eleccion2);
+        if(eleccion2==1){
+            eliminar_libro(dato, cantidad);
+        }
+        if(eleccion2==2){
+            change(dato, 2, cantidad);
+        }
+    }
+    reewrite(the_file, dato, cantidad);
+    fclose(the_file);
+}
+
+//Permite modificar los pisos, agregando o quitando.
+void piso(libro dato[], int cantidad, char* filename, FILE *the_file){
+    FILE *inventario = closingFile(filename);
+    int eleccion;
+    printf("\nSelecciona si Agregar (1) o Quitar (2) Piso: ");
+    scanf("%d", &eleccion);
+    int eleccion2;
+    if(eleccion==1){
+        printf("\nDesea anadir un Piso anadiendo un Libro (1) o cambiar el Piso de un Libro (2): ");
+        scanf("%d", &eleccion2);
+        if(eleccion2==1){
+            agregar_libro(dato, cantidad);
+        }
+        if(eleccion2==2){
+            change(dato, 3, cantidad);
+        }
+    }
+    else if(eleccion==2){
+        printf("\nDesea quitar una Sede quitando un Libro (1) o  cambiar la Sede de un Libro (2)");
+        scanf("%d", &eleccion2);
+        if(eleccion2==1){
+            eliminar_libro(dato, cantidad);
+        }
+        if(eleccion2==2){
+            change(dato, 3, cantidad);
+        }
+    }
+    reewrite(the_file, dato, cantidad);
+    fclose(the_file);
+}
+
+//Se busca un libro.
+void buscarlibro(libro dato[], int cantidad){
+    find(dato, cantidad);
+}
+
+//Se dividen los casos segun el usuario ingrese la accion que desea realizar.
+void sub_menu(int eleccion, libro dato[], int cantidad, char* filename, FILE *the_file){
+    int n=0;
+    switch (eleccion)
+    {
+        case 1:
+            agregar_quitar(dato, cantidad, filename, the_file);
+            break;
+        case 2:
+            sede(dato, cantidad, filename, the_file);
+            break;
+        case 3:
+            editar(dato, cantidad, filename, the_file);
+            break;
+        case 4:
+            cambiar(dato, cantidad, filename, the_file);
+            break;
+        case 5:
+            seccion(dato, cantidad, filename, the_file);
+            break;
+        case 6:
+            piso(dato, cantidad, filename, the_file);
+            break;
+        case 7:
+            buscarlibro(dato, cantidad);
+            break;
+        default:
+            // solo si el usuario ingresa una opcion que no este comtemplada
+            printf("Ingresar un numero que este en la lista\n\n");
+            break;
+    }
+}
