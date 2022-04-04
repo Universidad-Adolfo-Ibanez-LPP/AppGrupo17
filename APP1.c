@@ -427,3 +427,133 @@ void sub_menu(int eleccion, libro dato[], int cantidad, char* filename, FILE *th
             break;
     }
 }
+
+//-------------------------------------------------------------------
+// Funciones y procedimientos base
+//-------------------------------------------------------------------
+
+//Permite saber la cantidad de libros existentes en la biblioteca
+int cantidad_libros(FILE *the_file){
+    char line[1000];
+    int counter = -1;
+    while (fgets(line, 1000, the_file) != NULL){
+        counter++;
+    }
+    return counter;
+}
+
+//Se abre el archivo donde se encuentra la biblioteca
+FILE * openingFile(char *filename){
+    FILE *fp;
+    fp = fopen(filename,"r");
+    return fp;
+}
+
+//Se define la estructura de cada libro.
+libro* getLibros(FILE *the_file){
+
+    libro *dato = (libro*) malloc(5000*sizeof(libro));
+
+    char line[1000];
+    char *sp;
+    int row_count = 1;
+    int counter = 1;
+    int i = 1;
+
+    while (fgets(line, 1000, the_file) != NULL){
+
+        int a = 0;
+        dato[i].nro = counter;
+
+        if (row_count == 1){
+            row_count++;
+            continue;
+        }
+
+        if (line[0] == '"'){
+            sp = strtok(line, "\"");
+            a++;
+        }
+
+        if (a == 0){
+            sp = strtok(line, ",");
+        }
+
+        strcpy(dato[i].titulo, sp);
+        sp = strtok(NULL, ",");
+
+        strcpy(dato[i].autor, sp);
+        sp = strtok(NULL, ",");
+
+        dato[i].ano = atoi(sp);
+        sp = strtok(NULL, ",");
+
+        dato[i].estante_numero = atoi(sp);
+        sp = strtok(NULL, ",");
+
+        strcpy(dato[i].estante_seccion, sp);
+        sp = strtok(NULL, ",");
+
+        dato[i].piso = atoi(sp);
+        sp = strtok(NULL, ",");
+
+        strcpy(dato[i].edificio, sp);
+        sp = strtok(NULL, ",");
+
+        strcpy(dato[i].sede, sp);
+        sp = strtok(NULL, ",");
+
+        i++;
+        counter++;
+    }
+
+    for (int i=counter; i<counter+3; i++){
+        dato[i].nro = i;
+        strcpy(dato[i].titulo, " ");
+        strcpy(dato[i].autor, " ");
+        dato[i].ano = 0;
+        dato[i].estante_numero = 0;
+        strcpy(dato[i].estante_seccion, " ");
+        dato[i].piso = 0;
+        strcpy(dato[i].edificio, " ");
+        strcpy(dato[i].sede, " ");
+    }
+
+    fclose(the_file);
+    return dato;
+}
+
+//Se rescatan las selecciones del usuario, ademas de obtene la estructura de los libros
+void showContentAsStruct(FILE *the_file, int cantidad, char* filename){
+
+    if (the_file==NULL){
+        printf("ERROR");
+        exit(0);
+    }
+    libro *dato = getLibros(the_file);
+    int valor_menu = menu_opciones();
+    sub_menu(valor_menu, dato, cantidad, filename, the_file);
+    //se usara para terminar el loop
+}
+
+//Se da la salida del menu
+int preguntar_salir(void){
+    int rest;
+    printf("\nDesea salir del programa? Ingrese un numero distinto de 0: ");
+    scanf("%d",&rest);
+    return rest;
+}
+//-------------------------------------------------------------------
+//Funcion principal donde se ordenan todas las acciones y procedimientos.
+int main(int argc, char *argv[]) {
+
+    FILE *the_file = openingFile(argv[1]);
+    FILE *the_file2 = openingFile(argv[1]);
+    int a = cantidad_libros(the_file);
+    int n=0;
+    while(n==0){
+        showContentAsStruct(the_file2, a, argv[1]);
+        n=preguntar_salir();
+    }
+    return 0;
+}
